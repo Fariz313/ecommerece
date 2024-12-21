@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belanja Yuk</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand fs-1 fw-bold" style="margin-right: 10rem;" href="#">Belanja Yuk</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active fs-5 fw-bolder" aria-current="page" href="#">Mitra Jual</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 fw-bolder" href="#">Mitra</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link fs-5 fw-bolder" href="#">Tentang</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 fw-bolder disabled" href="#" tabindex="-1"
+                            aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <a href="./cart.html" class="mx-2 btn"><i class="fa-solid fa-cart-shopping"></i></a>
+                    <button class="mx-2 btn"><i class="fa-solid fa-map-location-dot"></i></button>
+                    <button class="mx-2 btn"><i class="fa-regular fa-user"></i></button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid p-5">
+        <h3>Keranjang Belanja</h3>
+        <div class="row">
+            <div class="col-md-8" id="rowBarang">
+                <div class="row">
+                    <div class="col-2">
+                        <img class="card-image-cart"
+                            src="https://mills.co.id/cdn/shop/products/14c626bd-cc27-4871-b5df-4dba4f49991e-sportage-cl-04.jpg?v=1706085072"
+                            alt="" srcset="">
+                    </div>
+                    <div class="col-6 ps-5">
+                        <div class="flex flex-column">
+                            <h4 class="fs-6 fw-bold mb-0">Nama Barang</h4>
+                            <span>Opsi Barang</span>
+                            <div class="flex">
+                                <input class="form-control inputAmount d-inline" type="number" name="" id="">
+                                <button class="btn">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <h5>Rp.4.200.000</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex flex-column">
+                    <table>
+                        <tr>
+                            <td>Subtotal</td>
+                            <td>Rp.4.200.000</td>
+                        </tr>
+                        <tr>
+                            <td>Biaya Layanan</td>
+                            <td>Rp.14.000</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Total</td>
+                            <td>Rp.4.200.000</td>
+                        </tr>
+                    </table>
+                    <button class="rounded-pill btn btn-primary mt-3">Periksa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        const userId = 0; // Example user ID
+        const apiUrl = `http://localhost:9000/api/keranjang/user/${userId}`;
+        let cartItems = []; // Store cart items for calculations
+
+        // Fetch cart data
+        function fetchCartData() {
+            $.ajax({
+                url: apiUrl,
+                method: 'GET',
+                success: function (response) {
+                    cartItems = Array.isArray(response) ? response : [response];
+
+                    // Clear existing cart content
+                    $("#rowBarang").empty();
+
+                    // Render cart items
+                    cartItems.forEach(item => {
+                        $("#rowBarang").append(`
+                            <div class="row mb-3">
+                                <div class="col-2">
+                                    <img class="card-image-cart img-fluid" src="${item.barang.gambar}" alt="${item.barang.nama}">
+                                </div>
+                                <div class="col-6 ps-5">
+                                    <div class="flex flex-column">
+                                        <h4 class="fs-6 fw-bold mb-0">${item.barang.nama}</h4>
+                                        <span>${item.barang.toko}</span>
+                                        <div class="flex mt-2">
+                                            <input class="form-control inputAmount d-inline me-2" type="number" value="${item.jumlah}" min="1" data-id="${item.id}" data-price="${item.barang.harga}">
+                                            <button class="btn btn-danger remove-item" data-id="${item.id}">Remove</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <h5>Rp.${parseInt(item.barang.harga).toLocaleString()}</h5>
+                                </div>
+                            </div>
+                    `);
+                    });
+
+                    // Attach event listeners
+                    attachListeners();
+
+                    // Update the total amount
+                    updateTotal();
+                },
+                error: function (err) {
+                    console.error("Error fetching cart data:", err);
+                    $(".row").append(`<div class="col-12">Failed to load cart items. Please try again later.</div>`);
+                }
+            });
+        }
+
+        // Attach event listeners for inputs and buttons
+        function attachListeners() {
+            $(".remove-item").click(function () {
+                const itemId = $(this).data("id");
+                removeCartItem(itemId);
+            });
+
+            $(".inputAmount").on("change", function () {
+                const itemId = $(this).data("id");
+                const newQuantity = parseInt($(this).val());
+                const itemPrice = parseInt($(this).data("price"));
+
+                // Update the cart item's quantity
+                updateCartItem(itemId, newQuantity);
+
+                // Update total after quantity change
+                updateTotal();
+            });
+        }
+
+        // Remove cart item
+        function removeCartItem(itemId) {
+            $.ajax({
+                url: `http://localhost:9000/api/keranjang/${itemId}`,
+                method: 'DELETE',
+                success: function () {
+                    alert("Item removed from cart");
+                    fetchCartData(); // Reload cart items
+                },
+                error: function (err) {
+                    console.error("Error removing cart item:", err);
+                    alert("Failed to remove item. Please try again later.");
+                }
+            });
+        }
+
+        // Update cart item quantity
+        function updateCartItem(itemId, quantity) {
+            $.ajax({
+                url: `http://localhost:9000/api/keranjang/${itemId}`,
+                method: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ jumlah: quantity }),
+                success: function () {
+                    console.log(`Updated item ${itemId} to quantity ${quantity}`);
+                },
+                error: function (err) {
+                    console.error("Error updating cart item:", err);
+                    alert("Failed to update item quantity. Please try again later.");
+                }
+            });
+        }
+
+        // Update the total amount
+        function updateTotal() {
+            let subtotal = 0;
+
+            cartItems.forEach(item => {
+                const quantity = $(`.inputAmount[data-id='${item.id}']`).val();
+                subtotal += parseInt(item.barang.harga) * parseInt(quantity);
+            });
+
+            const serviceFee = 14000; // Example service fee
+            const total = subtotal + serviceFee;
+
+            // Update the HTML
+            $("table").html(`
+            <tr>
+                <td>Subtotal</td>
+                <td>Rp.${subtotal.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Biaya Layanan</td>
+                <td>Rp.${serviceFee.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td class="fw-bold">Total</td>
+                <td>Rp.${total.toLocaleString()}</td>
+            </tr>
+        `);
+        }
+
+        // Initial fetch
+        fetchCartData();
+    });
+
+</script>
+
+</html>

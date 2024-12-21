@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belanja Yuk</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand fs-1 fw-bold" style="margin-right: 10rem;" href="#">Belanja Yuk</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active fs-5 fw-bolder" aria-current="page" href="#">Mitra Jual</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 fw-bolder" href="#">Mitra</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link fs-5 fw-bolder" href="#">Tentang</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 fw-bolder disabled" href="#" tabindex="-1"
+                            aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <a href="./cart.html" class="mx-2 btn"><i class="fa-solid fa-cart-shopping"></i></a>
+                    <button class="mx-2 btn"><i class="fa-solid fa-map-location-dot"></i></button>
+                    <button class="mx-2 btn"></button><i class="fa-regular fa-user"></i></button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid bg-menu">
+        <div class=" fw-bold text-white bg-text">Nikmati Belanja <br> Tanpa Batas</div>
+    </div>
+    <div class="container-fluid p-5">
+        <h3>Shop By Category</h3>
+        <div class="d-flex justify-content-evenly py-5">
+            <div class=" p-3" style="font-size: 3rem;">
+                <center>
+                    <i class="fa-solid fa-utensils"></i>
+                    <br>
+                    <span>Food</span>
+                </center>
+            </div>
+            <div class=" p-3" style="font-size: 3rem;">
+                <center>
+                    <i class="fa-solid fa-shirt"></i>
+                    <br>
+                    <span>Fashion</span>
+                </center>
+            </div>
+            <div class=" p-3" style="font-size: 3rem;">
+                <center>
+                    <i class="fa-solid fa-laptop"></i>
+                    <br>
+                    <span>Gadget</span>
+                </center>
+            </div>
+            <div class=" p-3" style="font-size: 3rem;">
+                <center>
+                    <i class="fa-solid fa-house-chimney"></i>
+                    <br>
+                    <span>Housing</span>
+                </center>
+            </div>
+            <div class=" p-3" style="font-size: 3rem;">
+                <center>
+                    <i class="fa-solid fa-car-side"></i>
+                    <br>
+                    <span>Vehicle</span>
+                </center>
+            </div>
+            <div class=" p-3" style="font-size: 3rem;">
+                <center>
+                    <i class="fa-solid fa-utensils"></i>
+                    <br>
+                    <span>Music</span>
+                </center>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid p-5">
+        <h3>Weekly Deals</h3>
+        <div class="row" id="barang-container">
+            <!-- Barang cards will be dynamically inserted here -->
+        </div>
+    </div>
+</body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Deals</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // Fetch barang from API
+            $.ajax({
+                url: 'http://localhost:9000/api/barang',
+                method: 'GET',
+                success: function (response) {
+                    // Container to append barang cards
+                    const container = $('#barang-container');
+
+                    // Iterate over response data
+                    response.forEach(item => {
+                        const card = `
+                            <div class="col-md-4 p-5">
+                                <div class="card border-0">
+                                    <img class="card-image" src="${item.gambar}" alt="${item.nama}" />
+                                    <h3 class="mb-3">${item.nama}</h3>
+                                    <span>
+                                        <i class="fa-regular fa-star"></i>
+                                        <i class="fa-regular fa-star"></i>
+                                        <i class="fa-regular fa-star"></i>
+                                        <i class="fa-regular fa-star"></i>
+                                        <i class="fa-regular fa-star"></i>
+                                    </span>
+                                    <button id="keranjang-${item.id}" onclick="addKeranjang(${item.id})" type="button" class="btn text-start ps-0 text-muted">
+                                        <i class="fa-solid fa-cart-arrow-down"></i> ${item.toko} 
+                                        <span id="loading-${item.id}" class="d-none">
+                                            <div class="spinner-border text-secondary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </span>
+                                    </button>
+                                    <span class="d-block">Rp. ${parseInt(item.harga).toLocaleString()}</span>
+                                </div>
+                            </div>
+                        `;
+
+                        // Append card to container
+                        container.append(card);
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching barang:', error);
+                }
+            });
+        });
+        async function addKeranjang(id) {
+            if (sessionStorage.getItem('user')) {
+                $('#keranjang-' + id).attr('disabled',true);
+                $('#loading-' + id).removeClass('d-none');
+                const user = await sessionStorage.getItem('user');
+                $.ajax({
+                    url: 'http://localhost:9000/api/keranjang',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        idBarang: id,
+                        idUser: user.id,
+                        jumlah: 1
+                    }),
+                    success: function (response) {
+                        $('#keranjang-' + id).attr('disabled',false)
+                        $('#keranjang-' + id).removeClass("text-muted").addClass("text-warning")
+                        $('#loading-' + id).addClass('d-none');
+                    },
+                    error: function (error) {
+                        $('#keranjang-' + id).attr('disabled',false)
+                        console.error('Error fetching barang:', error);
+                    }
+                });
+            } else {
+
+            }
+        }
+    </script>
+
+</html>
+<style>
+    .bg-menu {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./assets/img/menu.png');
+        background-position: 50% 20%;
+        background-size: cover;
+        min-height: 75vh;
+    }
+
+    .bg-text {
+        margin: 0;
+        position: absolute;
+        top: 20%;
+        left: 10%;
+        font-size: 3rem
+    }
+
+    .card-image {
+        object-fit: cover;
+    }
+
+    @media (min-width: 576px) {}
+
+    @media (min-width: 768px) {}
+
+    @media (min-width: 992px) {
+        .card-image {
+            width: 200px;
+            height: 200px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .card-image {
+            width: 300px;
+            height: 300px;
+        }
+    }
+
+    @media (min-width: 1400px) {
+        .card-image {
+            width: 430px;
+            height: 430px;
+        }
+    }
+</style>

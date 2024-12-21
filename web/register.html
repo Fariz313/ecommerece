@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row flex-row-reverse">
+            <div class="col-xl-4 col-lg-5 col-md-6 col-12 p-5">
+                <center>
+                    <h1 style="margin-bottom: 5rem;">BELANJA YUK</h1>
+                    <div style="margin-bottom: 5rem;">
+                        <h2>Selamat Datang</h2>
+                        <span>Masukan detail untuk membuat akun!</span>
+                    </div>
+                </center>
+                <hr data-content="AND" class="hr-text">
+                <form id="loginForm" class="mt-3">
+                    <input required class="underline mb-3" type="text" name="name" id="name" placeholder="Nama Lengkap">
+                    <input required class="underline mb-3" type="text" name="email" id="email" placeholder="Email">
+                    <input required class="underline mb-3" type="password" name="password" id="password"
+                        placeholder="Kata Sandi">
+                    <input required class="underline mb-3" type="password" name="password_confirmation"
+                        id="password_confirmation" placeholder="Ulangi Kata Sandi">
+                    <button type="submit" class="btn btn-primary w-100 mt-5">Daftar</button>
+                </form>
+                <span class="text-muted">Sudah punya akun? <a href="./login.html"> <b>Masuk</b> </a> </span>
+            </div>
+            <div class="col-xl-8 col-lg-7 col-md-6 d-none d-md-block">
+                <img src="./assets/img/login.png" style="height: 100vh; width: 100%; object-fit: cover;" alt="">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        $('#loginForm').on('submit', function (event) {
+            event.preventDefault();
+
+            // Clear previous errors
+            $('.error').text('');
+
+            // Get form data
+            const email = $('#email').val().trim();
+            const password = $('#password').val().trim();
+            const name = $('#name').val().trim();
+
+            // Simple validation
+            let isValid = true;
+            if (email === '') {
+                $('#emailError').text('Email is required.');
+                isValid = false;
+            }
+            if (password === '') {
+                $('#passwordError').text('Password is required.');
+                isValid = false;
+            }
+            if (name === '') {
+                $('#nameError').text('Name is required.');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Send login request to server
+            $.ajax({
+                url: 'http://localhost:9000/api/users', // Update with your API endpoint
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ email, password, name }),
+                success: function (response) {
+                    sessionStorage.setItem('user', JSON.stringify({
+                        id: response.id,
+                        email: response.email
+                    }));
+                    // Redirect or handle success
+                    window.location.href = 'login.html';
+                },
+                error: function (xhr) {
+                    if (xhr.status === 401) {
+                        alert('Invalid credentials.');
+                    } else {
+                        alert('An error occurred. Please try again later.');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+</html>
+<style>
+    input.underline {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        padding: 10px;
+        width: 100%;
+    }
+
+    input.underline::-webkit-input-placeholder {
+        font-weight: bolder;
+        color: #AFB2B3;
+    }
+
+    input.underline::-moz-placeholder {
+        font-weight: lighter;
+        color: #AFB2B3;
+    }
+
+    input.underline::-ms-input-placeholder {
+        font-weight: lighter;
+        color: #AFB2B3;
+    }
+
+
+    hr.dashed {
+        border-top: 2px dashed #999;
+    }
+
+    hr.dotted {
+        border-top: 2px dotted #999;
+    }
+
+    hr.solid {
+        border-top: 2px solid #999;
+    }
+
+
+    hr.hr-text {
+        position: relative;
+        border: none;
+        height: 1px;
+        background: #999;
+    }
+
+    hr.hr-text::before {
+        content: attr(data-content);
+        display: inline-block;
+        background: #fff;
+        font-weight: bold;
+        font-size: 0.85rem;
+        color: #999;
+        border-radius: 30rem;
+        padding: 0.2rem 2rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
