@@ -37,14 +37,14 @@ public class KeranjangController {
     }
 
     //Update Rest Api
-    @PutMapping("{id}")
+    @PostMapping("/edit/{id}")
     public ResponseEntity<Keranjang> updateKeranjang(@PathVariable("id") long id,
                                                    @RequestBody Keranjang keranjang){
         return new ResponseEntity<Keranjang>(keranjangService.updateKeranjang(keranjang,id),HttpStatus.OK);
     }
 
     //Delete Rest Api
-    @DeleteMapping("{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<String> deleteKeranjang(@PathVariable("id") long id){
         //delete keranjang from db
         keranjangService.deleteKeranjang(id);

@@ -22,4 +22,6 @@ public class Barang {
     private String toko;
     @Column(name = "gambar",nullable = false)
     private String gambar;
+    @Column(name = "kategori",nullable = false)
+    private String kategori;
 }

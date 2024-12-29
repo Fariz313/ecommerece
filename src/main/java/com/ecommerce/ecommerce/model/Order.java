@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "keranjang")
+@Table(name = "orders")
 public class Order {
 
     @Id
@@ -18,21 +18,15 @@ public class Order {
 
     @Column(name = "id_user", nullable = false)
     private long idUser;
+    
+    @Column(name = "id_alamat", nullable = true)
+    private int idAlamat;
 
-    @Column(name = "id_barang", nullable = false)
-    private long idBarang;
+    @Column(name = "payment_status", nullable = true)
+    private int paymentStatus;
 
-    @Column(name = "barang_nama", nullable = false)
-    private String barangNama;
-
-    @Column(name = "barang_harga", nullable = false)
-    private double barangHarga;
-
-    @Column(name = "barang_gambar", nullable = false)
-    private String barangGambar;
-
-    @Column(name = "jumlah", nullable = false)
-    private int jumlah;
+    @Column(name = "total", nullable = false)
+    private int total;
 
     // This removes the relationship with Barang and stores static information directly in the cart.
 }

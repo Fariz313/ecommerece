@@ -56,26 +56,9 @@
         <h3>Keranjang Belanja</h3>
         <div class="row">
             <div class="col-md-8" id="rowBarang">
-                <div class="row">
-                    <div class="col-2">
-                        <img class="card-image-cart"
-                            src="https://mills.co.id/cdn/shop/products/14c626bd-cc27-4871-b5df-4dba4f49991e-sportage-cl-04.jpg?v=1706085072"
-                            alt="" srcset="">
-                    </div>
-                    <div class="col-6 ps-5">
-                        <div class="flex flex-column">
-                            <h4 class="fs-6 fw-bold mb-0">Nama Barang</h4>
-                            <span>Opsi Barang</span>
-                            <div class="flex">
-                                <input class="form-control inputAmount d-inline" type="number" name="" id="">
-                                <button class="btn">Remove</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <h5>Rp.4.200.000</h5>
-                    </div>
-                </div>
+
+
+
             </div>
             <div class="col-md-4">
                 <div class="d-flex flex-column">
@@ -93,42 +76,121 @@
                             <td>Rp.4.200.000</td>
                         </tr>
                     </table>
-                    <button class="rounded-pill btn btn-primary mt-3">Periksa</button>
+                    <button onclick="saveOrder()" class="rounded-pill btn btn-primary mt-3">Periksa</button>
                 </div>
             </div>
         </div>
     </div>
 </body>
 <script>
-    $(document).ready(function () {
-        const userId = 0; // Example user ID
-        const apiUrl = `http://localhost:9000/api/keranjang/user/${userId}`;
-        let cartItems = []; // Store cart items for calculations
+    let userId = JSON.parse(sessionStorage.getItem('user')).id  ; // Example user ID
+    const apiUrl = `http://localhost:9000/api/keranjang/user/${userId}`;
+    let cartItems = []; // Store cart items for calculations
 
-        // Fetch cart data
-        function fetchCartData() {
-            $.ajax({
-                url: apiUrl,
-                method: 'GET',
-                success: function (response) {
-                    cartItems = Array.isArray(response) ? response : [response];
+    function attachListeners() {
+        updateTotal();
+    }
+    function updateTotal() {
+        let subtotal = 0;
 
-                    // Clear existing cart content
-                    $("#rowBarang").empty();
+        $(".form-check-input:checked").each(function () {
+            const itemId = $(this).closest(".row").find(".inputAmount").data("id");
+            const quantity = $(`.inputAmount[data-id='${itemId}']`).val();
+            const price = parseInt($(`.inputAmount[data-id='${itemId}']`).data("price"));
+            subtotal += price * quantity;
+        });
 
-                    // Render cart items
-                    cartItems.forEach(item => {
-                        $("#rowBarang").append(`
-                            <div class="row mb-3">
+        const serviceFee = 14000; // Example service fee
+        const total = subtotal + serviceFee;
+
+        // Update the HTML
+        $("table").html(`
+        <tr>
+            <td>Subtotal</td>
+            <td>Rp.${subtotal.toLocaleString()}</td>
+        </tr>
+        <tr>
+            <td>Biaya Layanan</td>
+            <td>Rp.${serviceFee.toLocaleString()}</td>
+        </tr>
+        <tr>
+            <td class="fw-bold">Total</td>
+            <td>Rp.${total.toLocaleString()}</td>
+        </tr>
+    `);
+    }
+
+    function updateCartItem(itemId, quantity) {
+        $.ajax({
+            url: `http://localhost:9000/api/keranjang/edit/${itemId}`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ jumlah: quantity }),
+            success: function () {
+                console.log(`Updated item ${itemId} to quantity ${quantity}`);
+            },
+            error: function (err) {
+                console.error("Error updating cart item:", err);
+                alert("Failed to update item quantity. Please try again later.");
+            }
+        });
+    }
+
+    function saveOrder() {
+        cartIdsList = []
+        console.log("cartItems",cartItems);
+        
+        cartItems.forEach(element => {
+            console.log("idof",`#check-item-${element.id}`);
+            console.log("valueof",$(`#check-item-${element.id}`).val());
+            if($(`#check-item-${element.id}`).val()){
+                cartIdsList.push(element.id)
+            }
+        });
+        $.ajax({
+            url: `http://localhost:9000/api/orders/create`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                idUser: userId,
+                cartIds: cartIdsList
+            }),
+            success: function (response) {
+                alert("success")
+                console.log(response);
+                fetchCartData();
+            
+            },
+            error: function (err) {
+                console.error("Error create ORDER:", err);
+                alert("Failed to Error create ORDER. Please try again later.");
+            }
+        });
+    }
+
+    function fetchCartData() {
+        $.ajax({
+            url: apiUrl,
+            method: 'GET',
+            success: function (response) {
+                cartItems = Array.isArray(response) ? response : [response];
+
+                // Clear existing cart content
+                $("#rowBarang").empty();
+
+                // Render cart items
+                cartItems.forEach(item => {
+                    $("#rowBarang").append(`
+                            <div class="row mb-3 shadow p-2 rounded" style="position:relative;">
                                 <div class="col-2">
-                                    <img class="card-image-cart img-fluid" src="${item.barang.gambar}" alt="${item.barang.nama}">
+                                    <img class="card-image-cart img-fluid rounded" src="${item.barang.gambar}" alt="${item.barang.nama}">
                                 </div>
                                 <div class="col-6 ps-5">
                                     <div class="flex flex-column">
                                         <h4 class="fs-6 fw-bold mb-0">${item.barang.nama}</h4>
                                         <span>${item.barang.toko}</span>
                                         <div class="flex mt-2">
-                                            <input class="form-control inputAmount d-inline me-2" type="number" value="${item.jumlah}" min="1" data-id="${item.id}" data-price="${item.barang.harga}">
+                                            <input onchange="attachListeners()" class="form-control inputAmount d-inline me-2" type="number" value="${item.jumlah}" min="1" data-id="${item.id}" data-price="${item.barang.harga}">
                                             <button class="btn btn-danger remove-item" data-id="${item.id}">Remove</button>
                                         </div>
                                     </div>
@@ -136,48 +198,50 @@
                                 <div class="col-4">
                                     <h5>Rp.${parseInt(item.barang.harga).toLocaleString()}</h5>
                                 </div>
+                                    <div  style="position: absolute; right: 10px; top: 10px; width: auto; top: 50%; transform: translate(-50%,-50%);">
+                                        <input onchange="attachListeners()" class="form-check-input" type="checkbox" name="" id="check-item-${item.id}">
+                                    </div>
                             </div>
                     `);
-                    });
+                });
 
-                    // Attach event listeners
-                    attachListeners();
 
-                    // Update the total amount
-                    updateTotal();
-                },
-                error: function (err) {
-                    console.error("Error fetching cart data:", err);
-                    $(".row").append(`<div class="col-12">Failed to load cart items. Please try again later.</div>`);
-                }
-            });
-        }
-
-        // Attach event listeners for inputs and buttons
-        function attachListeners() {
-            $(".remove-item").click(function () {
-                const itemId = $(this).data("id");
-                removeCartItem(itemId);
-            });
-
-            $(".inputAmount").on("change", function () {
-                const itemId = $(this).data("id");
-                const newQuantity = parseInt($(this).val());
-                const itemPrice = parseInt($(this).data("price"));
-
-                // Update the cart item's quantity
-                updateCartItem(itemId, newQuantity);
-
-                // Update total after quantity change
+                // Update the total amount
                 updateTotal();
-            });
-        }
+            },
+            error: function (err) {
+                console.error("Error fetching cart data:", err);
+                $(".row").append(`<div class="col-12">Failed to load cart items. Please try again later.</div>`);
+            }
+        });
+    }
+    $(document).ready(function () {
+        
+
+        // Fetch cart data
+
+
+        $(".remove-item").click(function () {
+            const itemId = $(this).data("id");
+            removeCartItem(itemId);
+        });
+
+        $(".inputAmount").on("change", function () {
+            const itemId = $(this).data("id");
+            const newQuantity = parseInt($(this).val());
+            const itemPrice = parseInt($(this).data("price"));
+
+            // Update the cart item's quantity
+
+            // Update total after quantity change
+        });
+        // Attach event listeners for inputs and buttons
 
         // Remove cart item
         function removeCartItem(itemId) {
             $.ajax({
-                url: `http://localhost:9000/api/keranjang/${itemId}`,
-                method: 'DELETE',
+                url: `http://localhost:9000/api/keranjang/delete/${itemId}`,
+                method: 'POST',
                 success: function () {
                     alert("Item removed from cart");
                     fetchCartData(); // Reload cart items
@@ -190,50 +254,9 @@
         }
 
         // Update cart item quantity
-        function updateCartItem(itemId, quantity) {
-            $.ajax({
-                url: `http://localhost:9000/api/keranjang/${itemId}`,
-                method: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify({ jumlah: quantity }),
-                success: function () {
-                    console.log(`Updated item ${itemId} to quantity ${quantity}`);
-                },
-                error: function (err) {
-                    console.error("Error updating cart item:", err);
-                    alert("Failed to update item quantity. Please try again later.");
-                }
-            });
-        }
+
 
         // Update the total amount
-        function updateTotal() {
-            let subtotal = 0;
-
-            cartItems.forEach(item => {
-                const quantity = $(`.inputAmount[data-id='${item.id}']`).val();
-                subtotal += parseInt(item.barang.harga) * parseInt(quantity);
-            });
-
-            const serviceFee = 14000; // Example service fee
-            const total = subtotal + serviceFee;
-
-            // Update the HTML
-            $("table").html(`
-            <tr>
-                <td>Subtotal</td>
-                <td>Rp.${subtotal.toLocaleString()}</td>
-            </tr>
-            <tr>
-                <td>Biaya Layanan</td>
-                <td>Rp.${serviceFee.toLocaleString()}</td>
-            </tr>
-            <tr>
-                <td class="fw-bold">Total</td>
-                <td>Rp.${total.toLocaleString()}</td>
-            </tr>
-        `);
-        }
 
         // Initial fetch
         fetchCartData();
