@@ -17,7 +17,7 @@
 <body style="min-height: 100vh; min-width: 100vh;">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand fs-1 fw-bold" style="margin-right: 10rem;" href="#">Belanja Yuk</a>
+            <a class="navbar-brand fs-1 fw-bold" style="margin-right: 10rem;" href="index.html">BelanjaYuk!</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -30,10 +30,27 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link fs-5 fw-bolder" href="tentang.html">Tentang</a>
+                    </li>
+                    <li id="li-admin" class="nav-item dropdown">
 
                     </li>
-                    <li class="nav-item">
-                    </li>
+                    <script>
+                        const usernav = await JSON.parse(sessionStorage.getItem('user'));
+                        if (usernav.role == "admin") {
+                            $('#li-admin').html(`
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="mitra.html">User</a></li>
+                                <li><a class="dropdown-item" href="barang.html">Product</a></li>
+                                <li><a class="dropdown-item" href="order.html">Transaksi</a></li>
+                                <li><a class="dropdown-item" href="category.html">Transaksi</a></li>
+                            </ul>
+                            `)
+                        }
+                    </script>
                 </ul>
                 <form class="d-flex" action="index.html" method="get">
                     <input class="form-control me-2" type="search" placeholder="Search" name="nama" aria-label="Search">
@@ -43,11 +60,18 @@
                         </a>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                             id="jumlahKeranjagn">
-                            99+
+                            0
                         </span>
                     </div>
-                    <a href="alamat.html" class="mx-2 btn"><i class="fa-solid fa-map-location-dot"></i></a>
-                    <button class="mx-2 btn"><i class="fa-regular fa-user"></i></button>
+                    <a href="profile.html" class="mx-2 btn"><i class="fa-solid fa-map-location-dot"></i></a>
+                    <div class="dropdown">
+                        <button class="mx-2 btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i
+                                class="fa-regular fa-user"></i></button>
+                        <ul class="dropdown-menu" style="transform: translateX(-125px);">
+                            <li><a class="dropdown-item" href="order.html">Order Saya</a></li>
+                            <li><a class="dropdown-item" href="login.html">Logout</a></li>
+                        </ul>
+                    </div>
                 </form>
             </div>
         </div>
