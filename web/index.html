@@ -10,15 +10,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"
-        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="SB-Mid-client-uOmHSEGp3aqBDmtj"></script>
     <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand fs-1 fw-bold" style="margin-right: 10rem;" href="#">Belanja Yuk</a>
+            <a class="navbar-brand fs-1 fw-bold" style="margin-right: 10rem;" href="#">BelanjaYuk!</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -27,26 +28,51 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active fs-5 fw-bolder" aria-current="page" href="#">Mitra Jual</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fs-5 fw-bolder" href="#">Mitra</a>
+                        <a class="nav-link fs-5 fw-bolder" href="mitra.html">Mitra</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link fs-5 fw-bolder" href="#">Tentang</a>
+                        <a class="nav-link fs-5 fw-bolder" href="tentang.html">Tentang</a>
+                    </li>
+                    <li id="li-admin" class="nav-item dropdown">
 
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link fs-5 fw-bolder disabled" href="#" tabindex="-1"
-                            aria-disabled="true">Disabled</a>
-                    </li>
+                    <script>
+                        const usernav = await JSON.parse(sessionStorage.getItem('user'));
+                        if (usernav.role == "admin") {
+                            $('#li-admin').html(`
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="mitra.html">User</a></li>
+                                <li><a class="dropdown-item" href="barang.html">Product</a></li>
+                                <li><a class="dropdown-item" href="order.html">Transaksi</a></li>
+                            </ul>
+                            `)
+                        }
+                    </script>
                 </ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="d-flex" action="index.html" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search" name="nama" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
-                    <a href="./cart.html" class="mx-2 btn"><i class="fa-solid fa-cart-shopping"></i></a>
-                    <button class="mx-2 btn"><i class="fa-solid fa-map-location-dot"></i></button>
-                    <button class="mx-2 btn"></button><i class="fa-regular fa-user"></i></button>
+                    <div style="position: relative;">
+                        <a href="./cart.html" class="mx-2 btn"><i class="fa-solid fa-cart-shopping"></i>
+                        </a>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            id="jumlahKeranjagn">
+                            0
+                        </span>
+                    </div>
+                    <a href="profile.html" class="mx-2 btn"><i class="fa-solid fa-map-location-dot"></i></a>
+                    <div class="dropdown">
+                        <button class="mx-2 btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i
+                                class="fa-regular fa-user"></i></button>
+                        <ul class="dropdown-menu" style="transform: translateX(-125px);">
+                            <li><a class="dropdown-item" href="order.html">Order Saya</a></li>
+                            <li><a class="dropdown-item" href="login.html">Logout</a></li>
+                        </ul>
+                    </div>
                 </form>
             </div>
         </div>
@@ -54,90 +80,66 @@
     <div class="container-fluid bg-menu">
         <div class=" fw-bold text-white bg-text">Nikmati Belanja <br> Tanpa Batas</div>
     </div>
-    <div class="container-fluid p-5">
+    <div class="container-fluid p-5 pb-0">
         <h3>Shop By Category</h3>
-        <div class="d-flex justify-content-evenly py-5">
-            <div class=" p-3" style="font-size: 3rem;">
-                <center>
-                    <i class="fa-solid fa-utensils"></i>
-                    <br>
-                    <span>Food</span>
-                </center>
-            </div>
-            <div class=" p-3" style="font-size: 3rem;">
-                <center>
-                    <i class="fa-solid fa-shirt"></i>
-                    <br>
-                    <span>Fashion</span>
-                </center>
-            </div>
-            <div class=" p-3" style="font-size: 3rem;">
-                <center>
-                    <i class="fa-solid fa-laptop"></i>
-                    <br>
-                    <span>Gadget</span>
-                </center>
-            </div>
-            <div class=" p-3" style="font-size: 3rem;">
-                <center>
-                    <i class="fa-solid fa-house-chimney"></i>
-                    <br>
-                    <span>Housing</span>
-                </center>
-            </div>
-            <div class=" p-3" style="font-size: 3rem;">
-                <center>
-                    <i class="fa-solid fa-car-side"></i>
-                    <br>
-                    <span>Vehicle</span>
-                </center>
-            </div>
-            <div class=" p-3" style="font-size: 3rem;">
-                <center>
-                    <i class="fa-solid fa-utensils"></i>
-                    <br>
-                    <span>Music</span>
-                </center>
-            </div>
+        <div id="category-list" class="row justify-content-evenly py-2 text-muted">
+
+
         </div>
     </div>
     <div class="container-fluid p-5">
-        <h3>Weekly Deals</h3>
+        <h3>Shops Items</h3>
         <div class="row" id="barang-container">
             <!-- Barang cards will be dynamically inserted here -->
         </div>
     </div>
 </body>
-<!DOCTYPE html>
-<html lang="en">
+<script>
+    let params = new URL(document.location.toString()).searchParams;
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramsQuery = params.toString()
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Deals</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
+    let cartItems = []
+    const apiUrl = "http://localhost:9000/api/"
+    async function fetchCartData() {
+        await $.ajax({
+            url: apiUrl + "keranjang",
+            method: 'GET',
+            success: function (response) {
+                cartItems = Array.isArray(response) ? response : [response];
+                $("#jumlahKeranjagn").html(cartItems.length)
+            },
+            error: function (err) {
+                console.error("Error fetching cart data:", err);
+            }
+        });
+    }
+    function isIdBarangExist(id_barang, keranjang) {
+        return keranjang.some(item => item.idBarang === id_barang);
+    }
+    function fetchItemData(params) {
+        $.ajax({
+            url: `http://localhost:9000/api/barang?${paramsQuery}`,
+            method: 'GET',
+            success: function (response) {
+                // Container to append barang cards
+                const container = $('#barang-container');
 
-<body>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function () {
+                // Iterate over response data
+                response.forEach(item => {
+                    let textWarning = "text-muted"
+                    console.log(item.id, cartItems);
+                    console.log(isIdBarangExist(item.id, cartItems));
 
-            // Fetch barang from API
-            $.ajax({
-                url: 'http://localhost:9000/api/barang',
-                method: 'GET',
-                success: function (response) {
-                    // Container to append barang cards
-                    const container = $('#barang-container');
+                    if (isIdBarangExist(item.id, cartItems)) {
+                        textWarning = "text-warning"
+                    }
+                    console.log(textWarning);
 
-                    // Iterate over response data
-                    response.forEach(item => {
-                        const card = `
+                    const card = `
                             <div class="col-md-4 p-5">
                                 <div class="card border-0">
-                                    <img class="card-image" src="${item.gambar}" alt="${item.nama}" />
+                                    <img class="card-image" src="../uploads/${item.gambar}" alt="${item.nama}" />
                                     <h3 class="mb-3">${item.nama}</h3>
                                     <span>
                                         <i class="fa-regular fa-star"></i>
@@ -146,7 +148,7 @@
                                         <i class="fa-regular fa-star"></i>
                                         <i class="fa-regular fa-star"></i>
                                     </span>
-                                    <button id="keranjang-${item.id}" onclick="addKeranjang(${item.id})" type="button" class="btn text-start ps-0 text-muted">
+                                    <button id="keranjang-${item.id}" onclick="addKeranjang(${item.id})" type="button" class="btn text-start  ps-0  ${textWarning}">
                                         <i class="fa-solid fa-cart-arrow-down"></i> ${item.toko} 
                                         <span id="loading-${item.id}" class="d-none">
                                             <div class="spinner-border text-secondary" role="status">
@@ -159,46 +161,92 @@
                             </div>
                         `;
 
-                        // Append card to container
-                        container.append(card);
-                    });
+                    // Append card to container
+                    container.append(card);
+                });
+            },
+            error: function (error) {
+                console.error('Error fetching barang:', error);
+            }
+        });
+
+    }
+    function fetchItemCategory(params) {
+        $.ajax({
+            url: `http://localhost:9000/api/category`,
+            method: 'GET',
+            success: function (response) {
+                // Container to append barang cards
+                const container = $('#category-list');
+
+                // Iterate over response data
+                response.forEach(item => {
+                    let textWarning = "text-secondary"
+
+
+                    if (item.nama == urlParams.get('kategori')) {
+                        textWarning = "text-warning"
+                    }
+                    console.log(textWarning);
+
+                    const card = `
+                            <a href="?kategori=${item.nama}" class="col-4 col-sm-3 col-md-2 col-lg-1 ${textWarning} p-3" style="font-size: 3rem; line-height: 0px;text-decoration:none">
+                                <center>
+                                    ${item.icon}
+                                    <br>
+                                    <span class="fs-6">${item.nama}</span>
+                                </center>
+                            </a>
+                        `;
+
+                    // Append card to container
+                    container.append(card);
+                });
+            },
+            error: function (error) {
+                console.error('Error fetching barang:', error);
+            }
+        });
+
+    }
+
+
+    $(document).ready(async function () {
+        await fetchCartData()
+        await fetchItemCategory()
+        await fetchItemData()
+        // Fetch barang from API
+    });
+    async function addKeranjang(id) {
+        if (sessionStorage.getItem('user')) {
+            $('#keranjang-' + id).attr('disabled', true);
+            $('#loading-' + id).removeClass('d-none');
+            const user = await JSON.parse(sessionStorage.getItem('user'));
+            $.ajax({
+                url: 'http://localhost:9000/api/keranjang',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    idBarang: id,
+                    idUser: user.id,
+                    jumlah: 1
+                }),
+                success: function (response) {
+                    $('#keranjang-' + id).attr('disabled', false)
+                    $('#keranjang-' + id).removeClass("text-muted").addClass("text-warning")
+                    $('#loading-' + id).addClass('d-none');
+                    $("#jumlahKeranjagn").html(cartItems.length++)
                 },
                 error: function (error) {
+                    $('#keranjang-' + id).attr('disabled', false)
                     console.error('Error fetching barang:', error);
                 }
             });
-        });
-        async function addKeranjang(id) {
-            if (sessionStorage.getItem('user')) {
-                $('#keranjang-' + id).attr('disabled',true);
-                $('#loading-' + id).removeClass('d-none');
-                const user = await sessionStorage.getItem('user');
-                $.ajax({
-                    url: 'http://localhost:9000/api/keranjang',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        idBarang: id,
-                        idUser: user.id,
-                        jumlah: 1
-                    }),
-                    success: function (response) {
-                        $('#keranjang-' + id).attr('disabled',false)
-                        $('#keranjang-' + id).removeClass("text-muted").addClass("text-warning")
-                        $('#loading-' + id).addClass('d-none');
-                    },
-                    error: function (error) {
-                        $('#keranjang-' + id).attr('disabled',false)
-                        console.error('Error fetching barang:', error);
-                    }
-                });
-            } else {
-                window.location.href = "login.html"
-            }
+        } else {
+            window.location.href = "login.html"
         }
-    </script>
-
-</html>
+    }
+</script>
 <style>
     .bg-menu {
         background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./assets/img/menu.png');

@@ -76,7 +76,8 @@
                 success: function (response) {
                     sessionStorage.setItem('user', JSON.stringify({
                         id: response.id,
-                        email: response.email
+                        email: response.email,
+                        role: response.role
                     }));
                     // Redirect or handle success
                     window.location.href = 'index.html';

@@ -1,5 +1,7 @@
 package com.ecommerce.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,8 +18,10 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "id_order", nullable = false)
-    private long idOrder;
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "id_order", nullable = false)
+    private Order order;
 
     @Column(name = "id_barang", nullable = false)
     private long idBarang;

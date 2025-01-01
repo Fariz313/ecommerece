@@ -3,7 +3,10 @@ package com.ecommerce.ecommerce.service.impl;
 import com.ecommerce.ecommerce.model.Barang;
 import com.ecommerce.ecommerce.repository.BarangRepository;
 import com.ecommerce.ecommerce.service.BarangService;
+import com.ecommerce.ecommerce.specification.BarangSpecification;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +25,14 @@ public class BarangServiceImpl implements BarangService {
 
     // get all barang form database
     @Override
-    public List<Barang> getAllBarang() {
-        return barangRepository.findAll();
+    public List<Barang> getAllBarang(String nama, String kategori, String harga, String toko, String gambar) {
+        Specification<Barang> spec = Specification.where(BarangSpecification.hasNama(nama))
+            .and(BarangSpecification.hasKategori(kategori))
+            .and(BarangSpecification.hasHarga(harga))
+            .and(BarangSpecification.hasToko(toko))
+            .and(BarangSpecification.hasGambar(gambar));
+
+        return barangRepository.findAll(spec);
     }
 
     // get barang using id

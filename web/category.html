@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management Category</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand fs-1 fw-bold" style="margin-right: 10rem;" href="#">Belanja Yuk</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 fw-bolder" href="mitra.html">Mitra</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link fs-5 fw-bolder" href="tentang.html">Tentang</a>
+
+                    </li>
+                    <li class="nav-item">
+                    </li>
+                </ul>
+                <form class="d-flex" action="index.html" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search" name="nama" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <div style="position: relative;">
+                        <a href="./cart.html" class="mx-2 btn"><i class="fa-solid fa-cart-shopping"></i>
+                        </a>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            id="jumlahKeranjagn">
+                            99+
+                        </span>
+                    </div>
+                    <a href="alamat.html" class="mx-2 btn"><i class="fa-solid fa-map-location-dot"></i></a>
+                    <button class="mx-2 btn"><i class="fa-regular fa-user"></i></button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <h1 class="text-center">CRUD Category</h1>
+        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#categoryModal" id="addCategoryBtn">
+            Tambah Category
+        </button>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Icon</th>
+                </tr>
+            </thead>
+            <tbody id="categoryTableBody">
+                <!-- Data Category Akan Dimuat di Sini -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="categoryForm" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="categoryModalLabel">Tambah Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="id" name="id">
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama Category</label>
+                            <input type="text" class="form-control" id="nama" name="nama" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="harga" class="form-label">Icon</label>
+                            <input type="text" class="form-control" id="icon" name="icon" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let userId = ""
+        $(document).ready(function () {
+            try {
+                userId = JSON.parse(sessionStorage.getItem('user')).id;
+            } catch (error) {
+                window.location.href = "login.html    "
+            }
+            $("#id_user").val(userId)
+            const loadCategory = () => {
+                $.get('http://localhost:9000/api/category', function (data) {
+                    let tableBody = '';
+                    data.forEach((item, index) => {
+                        tableBody += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${item.nama}</td>
+                                <td>${item.icon}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm editCategoryBtn" data-id="${item.id}">Edit</button>
+                                    <button class="btn btn-danger btn-sm deleteCategoryBtn" data-id="${item.id}">Hapus</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    $('#categoryTableBody').html(tableBody);
+                });
+            };
+
+            loadCategory();
+
+            $('#addCategoryBtn').click(function () {
+                $('#categoryForm')[0].reset();
+                $('#id').val('');
+                $('#categoryModalLabel').text('Tambah Category');
+            });
+
+            $(document).on('click', '.editCategoryBtn', function () {
+                const id = $(this).data('id');
+                $.get(`http://localhost:9000/api/category/${id}`, function (data) {
+                    $('#id').val(data.id);
+                    $('#nama').val(data.nama);
+                    $('#harga').val(data.icon);
+                    $('#categoryModalLabel').text('Edit Category');
+                    $('#categoryModal').modal('show');
+                });
+            });
+
+            $(document).on('click', '.deleteCategoryBtn', function () {
+                const id = $(this).data('id');
+                if (confirm('Apakah Anda yakin ingin menghapus category ini?')) {
+                    $.ajax({
+                        url: `http://localhost:9000/api/category/${id}`,
+                        type: 'DELETE',
+                        success: function () {
+                            loadCategory();
+                        }
+                    });
+                }
+            });
+
+            $('#categoryForm').submit(function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const id = $('#id').val();
+                const url = id ? `http://localhost:9000/api/category/${id}` : 'http://localhost:9000/api/category/save';
+
+                $.ajax({
+                    url: url,
+                    type: id ? 'PUT' : 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function () {
+                        $('#categoryModal').modal('hide');
+                        loadCategory();
+                    }
+                });
+                $(".modal-backdrop").remove()
+            });
+        });
+    </script>
+</body>
+
+</html>

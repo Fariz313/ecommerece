@@ -1,5 +1,9 @@
 package com.ecommerce.ecommerce.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,14 +23,19 @@ public class Order {
     @Column(name = "id_user", nullable = false)
     private long idUser;
     
-    @Column(name = "id_alamat", nullable = true)
-    private int idAlamat;
-
     @Column(name = "payment_status", nullable = true)
     private int paymentStatus;
 
     @Column(name = "total", nullable = false)
     private int total;
+
+    @ManyToOne
+    @JoinColumn(name = "id_alamat", referencedColumnName = "id", insertable = true, updatable = true)
+    private Alamat alamat;
+    
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<OrderItem> orderItems;
 
     // This removes the relationship with Barang and stores static information directly in the cart.
 }

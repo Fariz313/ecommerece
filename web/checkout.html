@@ -14,6 +14,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="SB-Mid-client-uOmHSEGp3aqBDmtj"></script>
 </head>
 
 <body>
@@ -28,25 +30,27 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active fs-5 fw-bolder" aria-current="page" href="#">Mitra Jual</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fs-5 fw-bolder" href="#">Mitra</a>
+                        <a class="nav-link fs-5 fw-bolder" href="mitra.html">Mitra</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link fs-5 fw-bolder" href="#">Tentang</a>
+                        <a class="nav-link fs-5 fw-bolder" href="tentang.html">Tentang</a>
 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fs-5 fw-bolder disabled" href="#" tabindex="-1"
-                            aria-disabled="true">Disabled</a>
                     </li>
                 </ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="d-flex" action="index.html" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search" name="nama" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
-                    <a href="./cart.html" class="mx-2 btn"><i class="fa-solid fa-cart-shopping"></i></a>
-                    <button class="mx-2 btn"><i class="fa-solid fa-map-location-dot"></i></button>
+                    <div style="position: relative;">
+                        <a href="./cart.html" class="mx-2 btn"><i class="fa-solid fa-cart-shopping"></i>
+                        </a>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            id="jumlahKeranjagn">
+                            99+
+                        </span>
+                    </div>
+                    <a href="alamat.html" class="mx-2 btn"><i class="fa-solid fa-map-location-dot"></i></a>
                     <button class="mx-2 btn"><i class="fa-regular fa-user"></i></button>
                 </form>
             </div>
@@ -57,45 +61,152 @@
         <div class="row">
             <div class="col-md-5">
                 <h3>Informasi Pengiriman</h3>
-                <div class="flex flex-column py-5">
-                    <div class="card p-3">
-                        <h5 class="mb-0">Alamat Rumah</h5>
-                        <span class="mb-0">Tyo Firmansyah</span>
-                        <span class="mb-3">085707070</span>
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat error pariatur obcaecati
-                            laudantium
-                            voluptatem quisquam officia, recusandae at. Ullam cum voluptatem adipisci et, obcaecati
-                            vitae
-                            facilis dignissimos sequi blanditiis ea?</p>
-                    </div>
-                    <button class="btn btn-outline-dark rounded w-100 my-3">+ Tambah Alamat</button>
+                <div class="flex flex-column py-5" id="row-alamat">
+
+                    <a href="profile.html" class="btn btn-outline-dark rounded w-100 my-3">+ Tambah Alamat</a>
                 </div>
             </div>
-            <div class="col-md-7">
-                <div class="row">
-                    <div class="col-2">
-                        <img class="card-image-cart"
-                            src="https://mills.co.id/cdn/shop/products/14c626bd-cc27-4871-b5df-4dba4f49991e-sportage-cl-04.jpg?v=1706085072"
-                            alt="" srcset="">
-                    </div>
-                    <div class="col-6 ps-5">
-                        <div class="flex flex-column">
-                            <h4 class="fs-6 fw-bold mb-0">Nama Barang</h4>
-                            <span>Opsi Barang</span>
-                            <span>Qty 1</span>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <h5>Rp.4.200.000</h5>
-                    </div>
-                </div>
+            <div class="col-md-7" id="row-item">
+
             </div>
         </div>
-        <div class="row">
+        <div class="row mt-5">
             <div class="col-md-6"></div>
-            <div class="col-md-6"><button class="btn btn-primary w-100 rounded-pill">Lanjutkan Ke Pembayaran</button></div>
+            <div class="col-md-6"><button onclick="bayar()" class="btn btn-primary w-100 rounded-pill">Lanjutkan Ke Pembayaran</button>
+            </div>
         </div>
     </div>
 </body>
+<script>
+    let userId = JSON.parse(sessionStorage.getItem('user')).id; // Example user ID
+    let params = new URL(document.location.toString()).searchParams;
+    let order = null
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramsQuery = params.toString()
+    let alamat = []
+    const loadAlamat = () => {
+        $.get('http://localhost:9000/api/alamat', function (data) {
+            let tableBody = '';
+            alamat = data
+            data.forEach((item, index) => {
+                tableBody += `
+                            <div id="alamat-${item.id}" class="border card p-3 mb-2" onclick="selectAlamat(${item.id})">
+                                <h5 class="mb-0">${item.penerima}</h5>
+                                <span class="mb-3">${item.kontak}</span>
+                                <p>${item.alamat} - ${item.kodePos}</p>
+                            </div>
+                        `;
+            });
+            $('#row-alamat').html(tableBody);
+        });
+    };
+    loadAlamat()
+    const selectCard = (id) => {
+        alamat.forEach(element => {
+            if (element.id != id) {
+                $(`#alamat-${element.id}`).removeClass("border-warning")
+            }
+        });
+        $(`#alamat-${id}`).addClass("border-warning")
+    }
+    const selectAlamat = (id) => {
+        alamat.forEach(element => {
+            if (element.id != id) {
+                $(`#alamat-${element.id}`).removeClass("border-warning")
+            }
+        });
+        $(`#alamat-${id}`).addClass("border-warning")
+        const formData = JSON.stringify({
+            idUser: userId,
+            alamat: {
+                id: id // Mengirim objek alamat dengan ID-nya
+            },
+            payment_status: "pending",
+            total: order.total,
+        })
+        const url = `http://localhost:9000/api/orders/edit/${urlParams.get('id')}`;
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response);
+
+                $('#alamatModal').modal('hide');
+                getOrder();
+            }
+        });
+    }
+    const getOrder = () => {
+        $.ajax({
+            url: `http://localhost:9000/api/orders/${urlParams.get('id')}`,
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                order = response
+                $(`#alamat-${response.alamat?.id}`).addClass("border-warning");
+                $(`#row-item`).empty()
+                response.orderItems.forEach(element => {
+                    const dataHtml = `
+                                    <div class="row shadow p-2" >
+                                        <div class="col-8 ps-5">
+                                            <div class="flex flex-column">
+                                                <h4 class="fs-6 fw-bold mb-0">${element.barangNama}</h4>
+                                                <span>Opsi Barang</span>
+                                                <span>Qty ${element.jumlah}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5>Rp.${element.barangHarga}</h5>
+                                        </div>
+                                    </div>
+                                `
+                    $(`#row-item`).append(dataHtml)
+                });
+            },
+            error: function (err) {
+                console.error("Error create ORDER:", err);
+                alert("Failed to Error create ORDER. Please try again later.");
+            }
+        });
+    }
+    getOrder();
+    function bayar() {
+        $.ajax({
+            url: `http://localhost:9000/api/orders/payment`,
+            method: 'POST',
+            data: JSON.stringify({"Tester":"tester"}),
+            success: function (response) {
+                console.log(response);  
+                snap.pay(response, {
+                    onSuccess: function (result) {
+                        console.log('Success:', result);
+                        alert("Pembayaran berhasil!");
+                        // Redirect atau handle sukses
+                    },
+                    onPending: function (result) {
+                        console.log('Pending:', result);
+                        alert("Pembayaran sedang diproses!");
+                    },
+                    onError: function (result) {
+                        console.error('Error:', result);
+                        alert("Pembayaran gagal!");
+                    },
+                    onClose: function () {
+                        alert("Pembayaran ditutup tanpa menyelesaikan transaksi.");
+                    }
+                });
+            },
+            error: function (error) {
+                console.error('Error fetching bayar:', error);
+            }
+        });
+
+    }
+
+</script>
 
 </html>

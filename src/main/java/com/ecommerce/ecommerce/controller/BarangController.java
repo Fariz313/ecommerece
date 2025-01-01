@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.DELETE })
 @RequestMapping("/api/barang")
 public class BarangController {
 
@@ -31,8 +32,13 @@ public class BarangController {
 
     // GetAll Rest Api
     @GetMapping
-    public List<Barang> getAllBarang() {
-        return barangService.getAllBarang();
+    public List<Barang> getAllBarang(@RequestParam(required = false) String nama,
+            @RequestParam(required = false) String kategori,
+            @RequestParam(required = false) String harga,
+            @RequestParam(required = false) String toko,
+            @RequestParam(required = false) String gambar) {
+
+        return barangService.getAllBarang(nama, kategori, harga, toko, gambar);
     }
 
     // Get by Id Rest Api
@@ -43,10 +49,34 @@ public class BarangController {
     }
 
     // Update Rest Api
-    @PutMapping("{id}")
-    public ResponseEntity<Barang> updateBarang(@PathVariable("id") long id,
-            @RequestBody Barang barang) {
-        return new ResponseEntity<Barang>(barangService.updateBarang(barang, id), HttpStatus.OK);
+    @PostMapping("update/{id}")
+    public ResponseEntity<?> updateBarang(@PathVariable("id") long id,
+            @RequestParam("nama") String nama,
+            @RequestParam("harga") String harga,
+            @RequestParam("toko") String toko,
+            @RequestParam("kategori") String kategori,
+            @RequestParam("gambar") MultipartFile file) {
+        try {
+            // Simpan file ke direktori
+            String uploadDir = "uploads/";
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir + fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, file.getBytes());
+
+            // Simpan data barang
+            Barang barang = new Barang();
+            barang.setNama(nama);
+            barang.setHarga(harga);
+            barang.setToko(toko);
+            barang.setKategori(kategori);
+            barang.setGambar(fileName);
+
+            return new ResponseEntity<Barang>(barangService.updateBarang(barang, id), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
     }
 
     // Delete Rest Api
@@ -81,10 +111,7 @@ public class BarangController {
             barang.setKategori(kategori);
             barang.setGambar(fileName);
 
-            BarangRepository barangRepository;
-            barangRepository.save(barang);
-
-            return ResponseEntity.ok("Barang berhasil disimpan!");
+            return new ResponseEntity<Barang>(barangService.saveBarang(barang), HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error: " + e.getMessage());

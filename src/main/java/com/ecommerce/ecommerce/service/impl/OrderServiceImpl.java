@@ -1,8 +1,10 @@
 package com.ecommerce.ecommerce.service.impl;
 
+import com.ecommerce.ecommerce.model.Alamat;
 import com.ecommerce.ecommerce.model.Keranjang;
 import com.ecommerce.ecommerce.model.Order;
 import com.ecommerce.ecommerce.model.OrderItem;
+import com.ecommerce.ecommerce.repository.AlamatRepository;
 import com.ecommerce.ecommerce.repository.KeranjangRepository;
 import com.ecommerce.ecommerce.repository.OrderItemRepository;
 import com.ecommerce.ecommerce.repository.OrderRepository;
@@ -21,6 +23,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private AlamatRepository alamatRepository;
 
     @Autowired
     private OrderItemRepository orderItemRepository;
@@ -70,9 +75,13 @@ public class OrderServiceImpl implements OrderService {
     public Order updateOrder(Order order, long id) {
         Order existingOrder = orderRepository.findById(id).orElseThrow(
                 () -> new RuntimeException());
-        // existingOrder.setBarang(order.getBarang());
-        // existingOrder.setIdUser(order.getIdUser());
-        // existingOrder.setJumlah(order.getJumlah());
+        if (order.getAlamat() != null && order.getAlamat().getId() > 0) {
+            Alamat alamat = alamatRepository.findById(order.getAlamat().getId())
+                    .orElseThrow(() -> new RuntimeException("Alamat not found"));
+            existingOrder.setAlamat(alamat);
+        }
+        existingOrder.setPaymentStatus(order.getPaymentStatus());
+        existingOrder.setTotal(order.getTotal());
         // save
         orderRepository.save(existingOrder);
         return existingOrder;
@@ -86,7 +95,6 @@ public class OrderServiceImpl implements OrderService {
         // delete
         orderRepository.deleteById(id);
     }
-
 
     @Override
     @Transactional
@@ -112,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
         // Save Order Items
         List<OrderItem> orderItems = keranjangList.stream().map(keranjang -> {
             OrderItem orderItem = new OrderItem();
-            orderItem.setIdOrder(savedOrder.getId());
+            orderItem.setOrder(order);
             orderItem.setIdBarang(keranjang.getIdBarang());
             orderItem.setBarangNama(keranjang.getBarang().getNama());
             orderItem.setBarangHarga(Double.parseDouble(keranjang.getBarang().getHarga()));

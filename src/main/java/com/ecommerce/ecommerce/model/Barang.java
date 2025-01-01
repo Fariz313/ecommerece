@@ -14,14 +14,23 @@ public class Barang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(name = "nama",nullable = false)
     private String nama;
+
     @Column(name = "harga",nullable = false)
     private String harga;
+
     @Column(name = "toko",nullable = false)
     private String toko;
-    @Column(name = "gambar",nullable = false)
+
+    @Column(name = "gambar",nullable = false)    
     private String gambar;
-    @Column(name = "kategori",nullable = false)
+
+    @Column(name = "kategori",nullable = false)    
     private String kategori;
+
+    @ManyToOne
+    @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
+    private User user;
 }

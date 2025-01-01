@@ -20,4 +20,6 @@ public class User {
     private String password;
     @Column(name = "name",nullable = false)
     private String name;
+    @Column(name = "role",nullable = true)
+    private String role;
 }

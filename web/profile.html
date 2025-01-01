@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belanja Yuk</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
+</head>
+
+<body style="min-height: 100vh; min-width: 100vh;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand fs-1 fw-bold" style="margin-right: 10rem;" href="#">Belanja Yuk</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 fw-bolder" href="mitra.html">Mitra</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link fs-5 fw-bolder" href="tentang.html">Tentang</a>
+
+                    </li>
+                    <li class="nav-item">
+                    </li>
+                </ul>
+                <form class="d-flex" action="index.html" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search" name="nama" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <div style="position: relative;">
+                        <a href="./cart.html" class="mx-2 btn"><i class="fa-solid fa-cart-shopping"></i>
+                        </a>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            id="jumlahKeranjagn">
+                            99+
+                        </span>
+                    </div>
+                    <a href="alamat.html" class="mx-2 btn"><i class="fa-solid fa-map-location-dot"></i></a>
+                    <button class="mx-2 btn"><i class="fa-regular fa-user"></i></button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="absolute-center">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex">
+                    <img src="assets/img/profile.webp" class="rounded-circle" style="height: 50px;width: 50px;" alt=""
+                        srcset="">
+                    <h3 class="my-auto ms-3">Nama User</h3>
+                    <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal"
+                        data-bs-target="#alamatModal">
+                        Tambahkan Alamat
+                    </button>
+                </div>
+            </div>
+            <div class="card-body" style="min-width: 75vw;">
+                <div class="row" id="row-alamat">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="alamatModal" tabindex="-1" aria-labelledby="alamatModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alamatModalLabel">Tambah Alamat</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="alamatForm">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Penerima</span>
+                            <input type="text" class="form-control" placeholder="Penerima" aria-label="Penerima"
+                                name="penerima" id="penerima" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Kontak</span>
+                            <input type="text" class="form-control" placeholder="kontak" aria-label="kontak"
+                                name="kontak" id="kontak" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Alamat</span>
+                            <textarea class="form-control" aria-label="Alamat" name="alamat" id="alamat"
+                                rows="4"></textarea>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Kode POS</span>
+                            <input type="text" class="form-control" placeholder="Penerima" aria-label="Penerima"
+                                name="kode_pos" id="kode_pos" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let userId = ""
+    $(document).ready(function () {
+        try {
+            userId = JSON.parse(sessionStorage.getItem('user')).id;
+        } catch (error) {
+            window.location.href = "login.html    "
+        }
+        $("#id_user").val(userId)
+        const loadAlamat = () => {
+            $.get('http://localhost:9000/api/alamat', function (data) {
+                let tableBody = '';
+                data.forEach((item, index) => {
+                    tableBody += `
+                            <div class="col-md-4 card shadow m-2">
+                                <div class="d-flex">
+                                    <h3 id="penerima-${item.id}">${item.penerima}</h3>
+                                    <div class="ms-auto d-flex">
+                                        <button class="btn btn-warning btn-sm editAlamatBtn"
+                                            data-id="${item.id}">Edit</button>
+                                        <button class="btn btn-danger btn-sm deleteAlamatBtn"
+                                            data-id="${item.id}">Hapus</button>
+                                    </div>
+                                </div>
+                                <span id="kontak-${item.id}" class="text-muted">${item.kontak}</span>
+                                <p>
+                                    <span id="alamat-${item.id}">
+                                        ${item.alamat}
+                                    </span>
+                                    <br>
+                                    <b id="kode_pos-${item.id}"> - ${item.kodePos}</b>
+                                </p>
+                            </div>
+                        `;
+                });
+                $('#row-alamat').html(tableBody);
+            });
+        };
+
+        loadAlamat();
+
+        $('#addAlamatBtn').click(function () {
+            $('#alamatForm')[0].reset();
+            $('#id').val('');
+            $('#alamatModalLabel').text('Tambah Alamat');
+        });
+
+        $(document).on('click', '.editAlamatBtn', function () {
+            const id = $(this).data('id');
+            $.get(`http://localhost:9000/api/alamat/${id}`, function (data) {
+                $('#id').val(data.id);
+                $('#penerima').val(data.penerima);
+                $('#kontak').val(data.kontak);
+                $('#alamat').val(data.alamat);
+                $('#kode_pos').val(data.kode_pos);
+                $('#alamatModalLabel').text('Edit Alamat');
+                $('#alamatModal').modal('show');
+            });
+        });
+
+        $(document).on('click', '.deleteAlamatBtn', function () {
+            const id = $(this).data('id');
+            if (confirm('Apakah Anda yakin ingin menghapus alamat ini?')) {
+                $.ajax({
+                    url: `http://localhost:9000/api/alamat/${id}`,
+                    type: 'DELETE',
+                    success: function () {
+                        loadAlamat();
+                    }
+                });
+            }
+        });
+
+        $('#alamatForm').submit(function (e) {
+            e.preventDefault();
+            const formData = JSON.stringify({
+                penerima: $('#penerima').val(),
+                kontak: $('#kontak').val(),
+                alamat: $('#alamat').val(),
+                kodePos: $('#kode_pos').val(),
+            })
+            const id = $('#id').val();
+            const url = id ? `http://localhost:9000/api/alamat/${id}` : 'http://localhost:9000/api/alamat';
+
+            $.ajax({
+                url: url,
+                type: id ? 'PUT' : 'POST',
+                data: formData,
+                processData: false,
+                contentType: "application/json",
+                success: function () {
+                    $('#alamatModal').modal('hide');
+                    loadAlamat();
+                }
+            });
+            $(".modal-backdrop").remove()
+        });
+    });
+</script>
+<!DOCTYPE html>
