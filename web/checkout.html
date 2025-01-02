@@ -15,7 +15,7 @@
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
     <script src="https://app.sandbox.midtrans.com/snap/snap.js"
-    data-client-key="SB-Mid-client-uOmHSEGp3aqBDmtj"></script>
+        data-client-key="SB-Mid-client-uOmHSEGp3aqBDmtj"></script>
 </head>
 
 <body>
@@ -96,7 +96,9 @@
         </div>
         <div class="row mt-5">
             <div class="col-md-6"></div>
-            <div class="col-md-6"><button onclick="bayar()" class="btn btn-primary w-100 rounded-pill">Lanjutkan Ke Pembayaran</button>
+            <div class="col-md-6" id="bayar">
+                <button onclick="bayar()" class="btn btn-primary w-100 rounded-pill">Lanjutkan Ke
+                    Pembayaran</button>
             </div>
         </div>
     </div>
@@ -171,6 +173,8 @@
             contentType: 'application/json',
             success: function (response) {
                 order = response
+                console.log(order);
+
                 $(`#alamat-${response.alamat?.id}`).addClass("border-warning");
                 $(`#row-item`).empty()
                 response.orderItems.forEach(element => {
@@ -190,6 +194,12 @@
                                 `
                     $(`#row-item`).append(dataHtml)
                 });
+                if (response.paymentStatus == 1) {
+                    $("#bayar").html(`
+                    
+                <button disabled class="btn btn-success w-100 rounded-pill">Lunas</button>
+                    `)
+                }
             },
             error: function (err) {
                 console.error("Error create ORDER:", err);
@@ -200,16 +210,37 @@
     getOrder();
     function bayar() {
         $.ajax({
-            url: `http://localhost:9000/api/orders/payment`,
+            url: `http://localhost:9000/api/orders/payment?total=${order.total}`,
             method: 'POST',
-            data: JSON.stringify({"Tester":"tester"}),
+            data: JSON.stringify({ "total": "tester" }),
             success: function (response) {
-                console.log(response);  
+                console.log(response);
                 snap.pay(response, {
                     onSuccess: function (result) {
-                        console.log('Success:', result);
-                        alert("Pembayaran berhasil!");
-                        // Redirect atau handle sukses
+                        order.paymentStatus = "success";
+                        const formData = JSON.stringify({
+                            idUser: userId,
+                            alamat: {
+                                id: order.alamat?.id // Mengirim objek alamat dengan ID-nya
+                            },
+                            paymentStatus: 1,
+                            total: order.total,
+                        })
+                        const url = `http://localhost:9000/api/orders/edit/${urlParams.get('id')}`;
+
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: "application/json",
+                            success: function (response) {
+                                console.log(response);
+
+                                $('#alamatModal').modal('hide');
+                                getOrder();
+                            }
+                        });
                     },
                     onPending: function (result) {
                         console.log('Pending:', result);

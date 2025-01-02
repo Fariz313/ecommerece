@@ -13,7 +13,7 @@
     <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://app.sandbox.midtrans.com/snap/snap.js"
-    data-client-key="SB-Mid-client-uOmHSEGp3aqBDmtj"></script>
+        data-client-key="SB-Mid-client-uOmHSEGp3aqBDmtj"></script>
 </head>
 
 <body>
@@ -102,9 +102,16 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     const apiUrl = `http://localhost:9000/api/orders`;
-    function fetchCartData() {
+    async function fetchCartData() {
+        const user = await sessionStorage.getItem('user')
+        const roleUser = JSON.parse(user).role
+        const idUser = JSON.parse(user).id;
+        let additionalParams = "";
+        if (idUser && roleUser != "admin") {
+            additionalParams = "?id=" + idUser;
+        }
         $.ajax({
-            url: apiUrl,
+            url: apiUrl+additionalParams,
             method: 'GET',
             success: function (response) {
                 item = Array.isArray(response) ? response : [response];
@@ -114,6 +121,10 @@
 
                 // Render cart items
                 item.forEach(item => {
+                    let terbayar = `<a href="checkout.html?id=${item.id}" class="btn btn-primary mt-auto p-2">Lanjutkan</a>`
+                    if(item.paymentStatus==1){
+                         terbayar = `<a href="#" class="btn btn-success mt-auto p-2">Lunas</a>`
+                    }
                     $("#rowOrder").append(`
                             <li class="list-group-item">
                                 <div class="d-flex">
@@ -124,7 +135,7 @@
                                     </div>
                                     <div class="ms-auto d-flex align-items-end flex-column" style="width:500px">
                                         <div class="p-2 fs-5 fw-bold">Rp. ${item.total}</div>
-                                        <a href="checkout.html?id=${item.id}" class="btn btn-primary mt-auto p-2">Lanjutkan</a>
+                                    ${terbayar}
                                     </div>
                                 </div>
                             </li>
@@ -140,7 +151,7 @@
     }
 
     console.log("fetched");
-    
+
     fetchCartData();
 </script>
 

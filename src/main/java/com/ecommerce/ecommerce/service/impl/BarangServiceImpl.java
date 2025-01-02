@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class BarangServiceImpl implements BarangService {
 
@@ -23,14 +24,18 @@ public class BarangServiceImpl implements BarangService {
         return barangRepository.save(barang);
     }
 
-    // get all barang form database
     @Override
-    public List<Barang> getAllBarang(String nama, String kategori, String harga, String toko, String gambar) {
+    public List<Barang> getAllBarang(String nama, String kategori, String harga, String toko, String gambar,
+            String id) {
         Specification<Barang> spec = Specification.where(BarangSpecification.hasNama(nama))
-            .and(BarangSpecification.hasKategori(kategori))
-            .and(BarangSpecification.hasHarga(harga))
-            .and(BarangSpecification.hasToko(toko))
-            .and(BarangSpecification.hasGambar(gambar));
+                .and(BarangSpecification.hasKategori(kategori))
+                .and(BarangSpecification.hasHarga(harga))
+                .and(BarangSpecification.hasToko(toko))
+                .and(BarangSpecification.hasGambar(gambar));
+
+        if (id != null && !id.isEmpty()) {
+            spec = spec.and(BarangSpecification.hasUserId(id));
+        }
 
         return barangRepository.findAll(spec);
     }

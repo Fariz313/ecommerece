@@ -152,8 +152,15 @@
             fetchItemCategory()
             userId = JSON.parse(sessionStorage.getItem('user')).id;
             $("#id_user").val(userId)
-            const loadBarang = () => {
-                $.get('http://localhost:9000/api/barang', function (data) {
+            const loadBarang = async () => {
+                const user = await sessionStorage.getItem('user')
+                const roleUser =  JSON.parse(user).role
+                const idUser = JSON.parse(user).id;
+                let additionalParams = "";
+                if(idUser && roleUser!="admin"){
+                    additionalParams = "?id="+idUser;
+                }
+                $.get('http://localhost:9000/api/barang'+additionalParams, function (data) {
                     let tableBody = '';
                     data.forEach((item, index) => {
                         tableBody += `
@@ -209,11 +216,22 @@
                 }
             });
 
-            $('#barangForm').submit(function (e) {
+            $('#barangForm').submit(async function (e) {
+                const user = await sessionStorage.getItem('user')
+                const roleUser =  JSON.parse(user).role
+                const idUser = JSON.parse(user).id;
+                let additionalParams = "";
+                if(idUser && roleUser!="admin"){
+                    additionalParams = "?id="+idUser;
+                }
                 e.preventDefault();
                 const formData = new FormData(this);
+                console.log('user.id', idUser);
+                formData.append('userId', idUser);
+                console.log(formData);
+                
                 const id = $('#id').val();
-                const url = id ? `http://localhost:9000/api/barang/update/${id}` : 'http://localhost:9000/api/barang/save';
+                const url = id ? `http://localhost:9000/api/barang/update/${id}` : `http://localhost:9000/api/barang/save`;
 
                 $.ajax({
                     url: url,

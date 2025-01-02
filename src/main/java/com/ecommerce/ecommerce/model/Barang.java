@@ -1,4 +1,6 @@
 package com.ecommerce.ecommerce.model;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +32,6 @@ public class Barang {
     @Column(name = "kategori",nullable = false)    
     private String kategori;
 
-    @ManyToOne
-    @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
-    private User user;
+    @Column(name = "id_user",nullable = true)
+    private long idUser;
 }

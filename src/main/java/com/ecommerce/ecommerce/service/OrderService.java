@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface OrderService {
     Order saveOrder(long idUser, List<Long> cartIds);
     Order saveAndUpdateOrder(Order order);
-    List<Order> getAllOrder();
+    List<Order> getAllOrder(String id);
     Optional<Order> getUserOrder(long idUser);
     Order getOrderById(long id);
     Order updateOrder(Order order,long id);

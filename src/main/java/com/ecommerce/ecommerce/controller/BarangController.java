@@ -2,7 +2,9 @@ package com.ecommerce.ecommerce.controller;
 
 import com.ecommerce.ecommerce.dto.LoginRequest;
 import com.ecommerce.ecommerce.model.Barang;
+import com.ecommerce.ecommerce.model.User;
 import com.ecommerce.ecommerce.repository.BarangRepository;
+import com.ecommerce.ecommerce.repository.UserRepsitory;
 import com.ecommerce.ecommerce.service.BarangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,9 @@ public class BarangController {
 
     @Autowired
     private BarangService barangService;
+    
+    @Autowired
+    UserRepsitory userRepsitory;
 
     @PostMapping
     public ResponseEntity<Barang> saveBarang(@RequestBody Barang barang) {
@@ -36,9 +41,10 @@ public class BarangController {
             @RequestParam(required = false) String kategori,
             @RequestParam(required = false) String harga,
             @RequestParam(required = false) String toko,
+            @RequestParam(required = false) String id,
             @RequestParam(required = false) String gambar) {
 
-        return barangService.getAllBarang(nama, kategori, harga, toko, gambar);
+        return barangService.getAllBarang(nama, kategori, harga, toko, gambar,id);
     }
 
     // Get by Id Rest Api
@@ -93,6 +99,7 @@ public class BarangController {
             @RequestParam("harga") String harga,
             @RequestParam("toko") String toko,
             @RequestParam("kategori") String kategori,
+            @RequestParam("userId") String userId,
             @RequestParam("gambar") MultipartFile file) {
 
         try {
@@ -102,7 +109,9 @@ public class BarangController {
             Path filePath = Paths.get(uploadDir + fileName);
             Files.createDirectories(filePath.getParent());
             Files.write(filePath, file.getBytes());
-
+            User user = userRepsitory.getById(Long.parseLong(userId));
+            System.out.println(user.getId());
+            System.out.println("id point");
             // Simpan data barang
             Barang barang = new Barang();
             barang.setNama(nama);
@@ -110,6 +119,7 @@ public class BarangController {
             barang.setToko(toko);
             barang.setKategori(kategori);
             barang.setGambar(fileName);
+            barang.setIdUser(user.getId());
 
             return new ResponseEntity<Barang>(barangService.saveBarang(barang), HttpStatus.CREATED);
         } catch (Exception e) {

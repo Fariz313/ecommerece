@@ -3,9 +3,9 @@ import com.ecommerce.ecommerce.model.Barang;
 import java.util.List;
 
 public interface BarangService {
-    Barang saveBarang(Barang employee);
-    List<Barang> getAllBarang(String nama, String kategori, String harga, String toko, String gambar);
+    Barang saveBarang(Barang barang);
+    List<Barang> getAllBarang(String nama, String kategori, String harga, String toko, String gambar,String id);
     Barang getBarangById(long id);
-    Barang updateBarang(Barang employee,long id);
+    Barang updateBarang(Barang barang,long id);
     void deleteBarang(long id);
 }

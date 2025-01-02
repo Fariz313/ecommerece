@@ -37,21 +37,26 @@
 
                     </li>
                     <script>
-                        const usernav = await JSON.parse(sessionStorage.getItem('user'));
-                        if (usernav.role == "admin") {
-                            $('#li-admin').html(`
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Admin
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="mitra.html">User</a></li>
-                                <li><a class="dropdown-item" href="barang.html">Product</a></li>
-                                <li><a class="dropdown-item" href="order.html">Transaksi</a></li>
-                                <li><a class="dropdown-item" href="category.html">Transaksi</a></li>
-                            </ul>
-                            `)
+                        async function fetchNavbar() {
+                            const usernav = await JSON.parse(sessionStorage.getItem('user'));
+                            console.log("usernav",usernav);
+                            
+                            if (usernav.role == "admin") {
+                                $('#li-admin').html(`
+                                <a class="nav-link fs-5 fw-bolder dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="user.html">User</a></li>
+                                    <li><a class="dropdown-item" href="mitra.html">Product</a></li>
+                                    <li><a class="dropdown-item" href="order.html">Transaksi</a></li>
+                                    <li><a class="dropdown-item" href="category.html">Kategori</a></li>
+                                </ul>
+                                `)
+                            }
                         }
+                        fetchNavbar()
                     </script>
                 </ul>
                 <form class="d-flex" action="index.html" method="get">

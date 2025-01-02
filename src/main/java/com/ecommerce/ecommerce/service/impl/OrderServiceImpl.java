@@ -1,6 +1,7 @@
 package com.ecommerce.ecommerce.service.impl;
 
 import com.ecommerce.ecommerce.model.Alamat;
+import com.ecommerce.ecommerce.model.Barang;
 import com.ecommerce.ecommerce.model.Keranjang;
 import com.ecommerce.ecommerce.model.Order;
 import com.ecommerce.ecommerce.model.OrderItem;
@@ -9,6 +10,8 @@ import com.ecommerce.ecommerce.repository.KeranjangRepository;
 import com.ecommerce.ecommerce.repository.OrderItemRepository;
 import com.ecommerce.ecommerce.repository.OrderRepository;
 import com.ecommerce.ecommerce.service.OrderService;
+import com.ecommerce.ecommerce.specification.OrderSpecification;
+import org.springframework.data.jpa.domain.Specification;
 
 import jakarta.transaction.Transactional;
 
@@ -50,7 +53,11 @@ public class OrderServiceImpl implements OrderService {
 
     // get all order form database
     @Override
-    public List<Order> getAllOrder() {
+    public List<Order> getAllOrder(String id) {
+        if (id != null && !id.isEmpty()) {
+            Specification<Order> spec = Specification.where(OrderSpecification.hasUserId(id));
+            return orderRepository.findAll(spec);
+        }
         return orderRepository.findAll();
     }
 

@@ -51,8 +51,8 @@ public class OrderController {
 
     // GetAll Rest Api
     @GetMapping
-    public List<Order> getAllOrder() {
-        return orderService.getAllOrder();
+    public List<Order> getAllOrder(@RequestParam(required = false) String id) {
+        return orderService.getAllOrder(id);
     }
 
     // Get by Id Rest Api
@@ -90,13 +90,13 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
-    public Map<String, Object> requestBody() {
+    public Map<String, Object> requestBody(String total) {
         UUID idRand = UUID.randomUUID();
         Map<String, Object> params = new HashMap<>();
 
         Map<String, String> transactionDetails = new HashMap<>();
         transactionDetails.put("order_id", idRand.toString());
-        transactionDetails.put("gross_amount", "265000");
+        transactionDetails.put("gross_amount", total);
 
         Map<String, String> creditCard = new HashMap<>();
         creditCard.put("secure", "true");
@@ -108,11 +108,11 @@ public class OrderController {
     }
     
     @PostMapping("/payment")
-    public ResponseEntity<?> createTransaction(@RequestBody String orderId) {
+    public ResponseEntity<?> createTransaction(@RequestBody String orderId,@RequestParam(required = false) String total) {
         try {
             Midtrans.serverKey ="SB-Mid-server-8gP0RWfsr-BkNR5MRCwa1Ocy";
             Midtrans.isProduction = false;
-            String transactionToken = SnapApi.createTransactionToken(requestBody());
+            String transactionToken = SnapApi.createTransactionToken(requestBody(total));
             return ResponseEntity.ok(transactionToken);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
