@@ -31,7 +31,8 @@
                     <span id="emailError" class="text-danger"></span>
                     <input required class="underline mb-3" type="text" name="email" id="email" placeholder="Email">
                     <span id="passwordError" class="text-danger"></span>
-                    <input required class="underline mb-3" type="password" name="password" id="password" placeholder="Password">
+                    <input required class="underline mb-3" type="password" name="password" id="password"
+                        placeholder="Password">
                     <button type="submit" class="btn btn-primary w-100 mt-5">Login</button>
                 </form>
                 <span class="text-muted">Belum punya akun? <a href="./register.html"> <b>Buat baru</b> </a> </span>
@@ -83,11 +84,16 @@
                     window.location.href = 'index.html';
                 },
                 error: function (xhr) {
-                    if (xhr.status === 401) {
-                        alert('Email/Password salah.');
-                    } else {
-                        alert('Email/Password salah.');
-                    }
+                    Swal.fire({
+                        title: "Login gagal",
+                        text: "Email/Password salah!",
+                        icon: "error"
+                    });
+                    // if (xhr.status === 401) {
+                    //     alert('Email/Password salah.');
+                    // } else {
+                    //     alert('Email/Password salah.');
+                    // }
                 }
             });
         });
