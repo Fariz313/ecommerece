@@ -33,9 +33,10 @@ public class AlamatController {
     // GetAll Rest Api
     @GetMapping
     public List<Alamat> getAllAlamat(@RequestParam(required = false) String nama,
-            @RequestParam(required = false) String icon) {
+            @RequestParam(required = false) String icon,
+            @RequestParam(required = false) String id) {
 
-        return alamatService.getAllAlamat(nama, icon);
+        return alamatService.getAllAlamat(nama, icon, id);
     }
 
     // Get by Id Rest Api

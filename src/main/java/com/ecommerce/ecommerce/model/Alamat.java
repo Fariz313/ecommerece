@@ -22,7 +22,6 @@ public class Alamat {
     private String penerima;
     @Column(name = "kontak",nullable = false)
     private String kontak;
-    @ManyToOne
-    @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
-    private User user;
+    @Column(name = "id_user",nullable = true)
+    private long idUser;
 }

@@ -1,8 +1,11 @@
 package com.ecommerce.ecommerce.service.impl;
 
 import com.ecommerce.ecommerce.model.Alamat;
+import com.ecommerce.ecommerce.model.Barang;
 import com.ecommerce.ecommerce.repository.AlamatRepository;
 import com.ecommerce.ecommerce.service.AlamatService;
+import com.ecommerce.ecommerce.specification.AlamatSpecification;
+import com.ecommerce.ecommerce.specification.BarangSpecification;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,8 +27,10 @@ public class AlamatServiceImpl implements AlamatService {
 
     // get all Alamat form database
     @Override
-    public List<Alamat> getAllAlamat(String nama, String icon) {
-        return alamatRepository.findAll();
+    public List<Alamat> getAllAlamat(String nama, String icon,String id) {
+        Specification<Alamat> spec = Specification.where(AlamatSpecification.hasUserId(id));
+
+        return alamatRepository.findAll(spec);
     }
 
     // get Alamat using id

@@ -7,11 +7,14 @@
     <title>Belanja Yuk</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="SB-Mid-client-uOmHSEGp3aqBDmtj"></script>
     <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body style="min-height: 100vh; min-width: 100vh;">
@@ -28,28 +31,31 @@
                     <li class="nav-item">
                         <a class="nav-link fs-5 fw-bolder" href="mitra.html">Mitra</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link fs-5 fw-bolder" href="tentang.html">Tentang</a>
-                    </li>
+
                     <li id="li-admin" class="nav-item dropdown">
 
                     </li>
                     <script>
-                        const usernav = await JSON.parse(sessionStorage.getItem('user'));
-                        if (usernav.role == "admin") {
-                            $('#li-admin').html(`
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Admin
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="mitra.html">User</a></li>
-                                <li><a class="dropdown-item" href="barang.html">Product</a></li>
-                                <li><a class="dropdown-item" href="order.html">Transaksi</a></li>
-                                <li><a class="dropdown-item" href="category.html">Transaksi</a></li>
-                            </ul>
-                            `)
+                        async function fetchNavbar() {
+                            const usernav = await JSON.parse(sessionStorage.getItem('user'));
+                            console.log("usernav",usernav);
+                            
+                            if (usernav.role == "admin") {
+                                $('#li-admin').html(`
+                                <a class="nav-link fs-5 fw-bolder dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="user.html">User</a></li>
+                                    <li><a class="dropdown-item" href="mitra.html">Product</a></li>
+                                    <li><a class="dropdown-item" href="order.html">Transaksi</a></li>
+                                    <li><a class="dropdown-item" href="category.html">Kategori</a></li>
+                                </ul>
+                                `)
+                            }
                         }
+                        fetchNavbar()
                     </script>
                 </ul>
                 <form class="d-flex" action="index.html" method="get">
@@ -135,8 +141,6 @@
         </div>
     </div>
 </body>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let userId = ""
     $(document).ready(function () {
@@ -147,7 +151,7 @@
         }
         $("#id_user").val(userId)
         const loadAlamat = () => {
-            $.get('http://localhost:9000/api/alamat', function (data) {
+            $.get('http://localhost:9000/api/alamat?id='+userId, function (data) {
                 let tableBody = '';
                 data.forEach((item, index) => {
                     tableBody += `
@@ -211,12 +215,14 @@
         });
 
         $('#alamatForm').submit(function (e) {
+            userId = JSON.parse(sessionStorage.getItem('user')).id;
             e.preventDefault();
             const formData = JSON.stringify({
                 penerima: $('#penerima').val(),
                 kontak: $('#kontak').val(),
                 alamat: $('#alamat').val(),
                 kodePos: $('#kode_pos').val(),
+                idUser: userId,
             })
             const id = $('#id').val();
             const url = id ? `http://localhost:9000/api/alamat/${id}` : 'http://localhost:9000/api/alamat';

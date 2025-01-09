@@ -32,28 +32,31 @@
                     <li class="nav-item">
                         <a class="nav-link fs-5 fw-bolder" href="mitra.html">Mitra</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link fs-5 fw-bolder" href="tentang.html">Tentang</a>
-                    </li>
+
                     <li id="li-admin" class="nav-item dropdown">
 
                     </li>
                     <script>
-                        const usernav = await JSON.parse(sessionStorage.getItem('user'));
-                        if (usernav.role == "admin") {
-                            $('#li-admin').html(`
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Admin
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="mitra.html">User</a></li>
-                                <li><a class="dropdown-item" href="barang.html">Product</a></li>
-                                <li><a class="dropdown-item" href="order.html">Transaksi</a></li>
-                                <li><a class="dropdown-item" href="category.html">Transaksi</a></li>
-                            </ul>
-                            `)
+                        async function fetchNavbar() {
+                            const usernav = await JSON.parse(sessionStorage.getItem('user'));
+                            console.log("usernav",usernav);
+                            
+                            if (usernav.role == "admin") {
+                                $('#li-admin').html(`
+                                <a class="nav-link fs-5 fw-bolder dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="user.html">User</a></li>
+                                    <li><a class="dropdown-item" href="mitra.html">Product</a></li>
+                                    <li><a class="dropdown-item" href="order.html">Transaksi</a></li>
+                                    <li><a class="dropdown-item" href="category.html">Kategori</a></li>
+                                </ul>
+                                `)
+                            }
                         }
+                        fetchNavbar()
                     </script>
                 </ul>
                 <form class="d-flex" action="index.html" method="get">
@@ -111,7 +114,14 @@
     const paramsQuery = params.toString()
     let alamat = []
     const loadAlamat = () => {
-        $.get('http://localhost:9000/api/alamat', function (data) {
+        userId=""
+        try {
+            userId = JSON.parse(sessionStorage.getItem('user')).id;
+        } catch (error) {
+            window.location.href = "login.html    "
+        }
+        $("#id_user").val(userId)
+        $.get('http://localhost:9000/api/alamat?id='+userId, function (data) {
             let tableBody = '';
             alamat = data
             data.forEach((item, index) => {
