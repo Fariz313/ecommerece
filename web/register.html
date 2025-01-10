@@ -72,6 +72,10 @@
             if (name === '') {
                 $('#nameError').text('Name is required.');
                 isValid = false;
+            }if(password!=$("#password_confirmation").val()){
+                alert("Password Dan Konfirmasi Tidak Sama.");
+                $('#nameError').text('Password Dan Konfirmasi Tidak Sama.');
+                isValid = false;
             }
 
             if (!isValid) return;
