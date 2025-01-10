@@ -234,8 +234,8 @@
                 const id = $(this).data('id');
                 if (confirm('Apakah Anda yakin ingin menghapus barang ini?')) {
                     $.ajax({
-                        url: `http://localhost:9000/api/barang/delete/${id}`,
-                        type: 'DELETE',
+                        url: `http://localhost:9000/api/barang/${id}`,
+                        method: 'DELETE',
                         success: function () {
                             loadBarang();
                         }
