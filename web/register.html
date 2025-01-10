@@ -14,7 +14,8 @@
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/add3d2a7df.js" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script></head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
 
 <body>
     <div class="container-fluid">
@@ -90,8 +91,9 @@
                         title: "Register berhasil",
                         text: "Silakan lanjutkan di login!",
                         icon: "success"
+                    }).then(function () {
+                        window.location.href = 'login.html';
                     });
-                    window.location.href = 'login.html';
                 },
                 error: function (xhr) {
                     if (xhr.status === 401) {
